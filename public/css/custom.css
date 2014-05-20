@@ -40,6 +40,9 @@ body {
 .speed {
     text-align: center;
 }
+.no-border {
+    border-top: none !important;
+}
 .embedComment{
     position: absolute;
     width: 100%;

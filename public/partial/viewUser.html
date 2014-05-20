@@ -1,0 +1,67 @@
+<div class="row">
+	<div class="col-lg-4">
+		<table class="table">
+			<tr>
+				<td class="no-border">
+					<img  ng-src="{{viewUser.img}}" width="120" class="img-rounded img-list">
+				</td>
+				<td class="no-border">
+					<h4><i class="fa fa-user"></i> {{viewUser.nick}}</h4><br>
+					<button type="submit" ng-click="follow()" class="btn btn-primary" ng-hide="user.follow.indexOf(viewUser._id )>=0 || user._id == viewUser._id">Follow</button>
+					<button type="submit" ng-click="unfollow()" class="btn btn-danger" ng-show="user.follow.indexOf(viewUser._id )>=0 && user._id != viewUser._id">Unfollow</button>
+					<p class="alert alert-info" ng-show="result.status">{{result.status}}</p>
+				</td>
+			</tr>
+			<tr>
+				<td class="pull-right no-border">Gender</td>
+				<td class="no-border"><b>{{viewUser.gender}}</b></td>
+			</tr>
+			<tr>
+				<td class="pull-right no-border">Self Introduction</td>
+				<td class="no-border"><b title="{{viewUser.intro}}">{{viewUser.intro.substring(0,20)}}</b></td>
+			</tr>
+			<tr>
+				<td class="pull-right no-border">Follows: </td>
+				<td class="no-border">
+					<span ng-repeat="follow in followedUser">
+						<a href="/viewUser/{{follow._id}}">{{follow.nick}}</a><br>
+						<!--<img  ng-src="{{follow.img}}" width="50" class="img-rounded img-list"><hr>-->
+							<!--<button ng-click="follow('{{follow.id}}')" class="btn btn-sm pull-right">Follow </button> {{result}}-->
+					</span>
+				</td>
+			</tr>
+		</table>
+	</div>
+	<div class="col-lg-8">
+		<h2><i class="fa fa-book "></i> Courses shared by {{viewUser.nick}}</h2>
+		<i class="{{loading}}"></i><br>
+		<table class="table table-hover ">
+			<thead>
+			<tr>
+				<th>Image</th>
+				<th>Name</th>
+				<th><i class="fa fa-comment"></i></th>
+				<th>
+					Introduction
+					<input type="search" ng-model="q" placeholder="Search in Introduction" class="searchBox pull-right">
+				</th>
+				<th>Date</th>
+			</tr>
+			</thead>
+			<tbody>
+			<tr ng-repeat="course in courses  | filter:{content: q}"
+				ng-animate="{enter: 'view-enter', leave:'view-exit'}">
+				<td>
+					<img ng-src="{{course.img}}" width="50">
+				</td>
+				<td class="small">
+					<a href='/course/{{course._id}}'>{{course.name}}</a>
+				</td>
+				<td><span class="badge">{{course.commentCount}}</span></td>
+				<td>{{course.content}}</td>
+				<td class="date">{{course.date | date: "short"}}</td>
+			</tr>
+			</tbody>
+		</table>
+	</div>
+</div>

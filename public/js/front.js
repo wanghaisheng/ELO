@@ -13,10 +13,10 @@ app.config(['$routeProvider', '$locationProvider', '$httpProvider',
                 templateUrl: '/partial/viewCourse.html',      //view course content
                 controller: 'courseShowCtrl'
             })
-//            .when('/user/:id',{
-//                templateUrl: '/partial/viewUser.html',      //show user profile
-//                controller: 'userShowCtrl'
-//            })
+            .when('/viewUser/:id',{
+                templateUrl: '/partial/viewUser.html',      //show user profile
+                controller: 'userShowCtrl'
+            })
             .when('/comment',{
                 templateUrl: '/partial/comment.html',     //user comments
                 controller: 'commentCtrl'
@@ -140,64 +140,64 @@ app.factory('speech', ['$rootScope', function ($rootScope) {
 app.controller('courseShowCtrl', ['$scope', '$rootScope', '$resource', 'speech', '$routeParams', function ($scope, $rootScope, $resource, speech, $routeParams) {
     $scope.load = function(){
         $resource('/show/course/'+ $routeParams.id).get(function(course){
-        $scope.course = course;
-        $scope.showText = true;
-        $scope.paragraphs = [];
-        $scope.cmt = {};
-        course.content.split('\n').forEach(function(para){
-            $scope.paragraphs.push({text:para});
-        });
+            $scope.course = course;
+            $scope.showText = true;
+            $scope.paragraphs = [];
+            $scope.cmt = {};
+            course.content.split('\n').forEach(function(para){
+                $scope.paragraphs.push({text:para});
+            });
 
-        var courseText = document.getElementById('courseText');
-        courseText.innerHTML = '';
-        var output = document.getElementById('comment');
-        $scope.comentText = '';
-        output.style.display = 'none';
-        var splitPosition = [];
-        var len = [];
-        if(course.comments){
-            course.comments.sort(function(a,b){return a.position - b.position;}).forEach(function(comment, index){
-                splitPosition[index] = comment.position;        //record start position of each comment
-                len[index] = comment.text.length;
+            var courseText = document.getElementById('courseText');
+            courseText.innerHTML = '';
+            var output = document.getElementById('comment');
+            $scope.comentText = '';
+            output.style.display = 'none';
+            var splitPosition = [];
+            var len = [];
+            if(course.comments){
+                course.comments.sort(function(a,b){return a.position - b.position;}).forEach(function(comment, index){
+                    splitPosition[index] = comment.position;        //record start position of each comment
+                    len[index] = comment.text.length;
+                });
+            }
+            var previousPosition = 0;
+            $scope.overlapped = false;
+            splitPosition.forEach(function(position, index){
+                var span = document.createElement("span");
+                var text = course.content.substring(previousPosition, position);
+                span.innerHTML = text.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>');   //encode HTML
+                courseText.insertBefore(span, null);
+                span = document.createElement("span");
+                span.style.backgroundColor = "yellow";
+                span.addEventListener('mouseover', function(e){
+                    $scope.textSelected = e.srcElement.innerText;
+                    e.srcElement.style.backgroundColor = 'orange';
+                    $scope.currentComments = course.comments[index];
+                    $scope.currentComments.reply.sort(function(a,b){return new Date(b.date) - new Date(a.date);});
+                    $scope.$apply();
+                    var output = document.getElementById('comment');
+                    output.style.display = "block";
+                    output.style.left = '15px';
+                    output.style.top = e.layerY+'px';
+                    output.style.marginTop = '10px';
+                    //when selected text contains part of the text which has already been commented, set this indicator to true.
+                    //Then the mouseup event handler 'selectText()' will not mark the selected text as a new comment label.
+                    $scope.overlapped = true;
+                });
+                span.addEventListener('mouseout', function(e){
+                    e.srcElement.style.backgroundColor = 'yellow';
+                    $scope.overlapped = false;       //reset overlap indicator to enable new text selection
+                });
+                span.innerHTML = course.content.substring(position, position+len[index]).replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>');
+                previousPosition = position + len[index];
+                courseText.insertBefore(span, null);
             });
-        }
-        var previousPosition = 0;
-        $scope.overlapped = false;
-        splitPosition.forEach(function(position, index){
             var span = document.createElement("span");
-            var text = course.content.substring(previousPosition, position);
-            span.innerHTML = text.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>');   //encode HTML
-            courseText.insertBefore(span, null);
-            span = document.createElement("span");
-            span.style.backgroundColor = "yellow";
-            span.addEventListener('mouseover', function(e){
-                $scope.textSelected = e.srcElement.innerText;
-                e.srcElement.style.backgroundColor = 'orange';
-                $scope.currentComments = course.comments[index];
-                $scope.currentComments.reply.sort(function(a,b){return new Date(b.date) - new Date(a.date);});
-                $scope.$apply();
-                var output = document.getElementById('comment');
-                output.style.display = "block";
-                output.style.left = '15px';
-                output.style.top = e.layerY+'px';
-                output.style.marginTop = '10px';
-                //when selected text contains part of the text which has already been commented, set this indicator to true.
-                //Then the mouseup event handler 'selectText()' will not mark the selected text as a new comment label.
-                $scope.overlapped = true;
-            });
-            span.addEventListener('mouseout', function(e){
-                e.srcElement.style.backgroundColor = 'yellow';
-                $scope.overlapped = false;       //reset overlap indicator to enable new text selection
-            });
-            span.innerHTML = course.content.substring(position, position+len[index]).replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>');
-            previousPosition = position + len[index];
-            courseText.insertBefore(span, null);
+            var text = course.content.substring(previousPosition).replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>');
+            span.innerHTML = text;
+            courseText.insertBefore(span,null);
         });
-        var span = document.createElement("span");
-        var text = course.content.substring(previousPosition).replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>');
-        span.innerHTML = text;
-        courseText.insertBefore(span,null);
-    });
     }
     $scope.load();
     $scope.rate = 1;
@@ -208,8 +208,10 @@ app.controller('courseShowCtrl', ['$scope', '$rootScope', '$resource', 'speech',
     $scope.remove = function() {
         var confirmed = confirm("Are you sure you want to remove this course? \n\nWarning: Removed courses can not be recovered.");
         if (confirmed) {
+            $scope.deleting = "fa fa-spinner fa-spin fa-3x";
             $resource('remove/course/'+$scope.course['_id']).delete(function(result){
                 $scope.numberOfRemovedDocs = result.numberOfRemovedDocs;
+                $scope.deleting = "";
             });
         }
     }
@@ -230,11 +232,13 @@ app.controller('courseShowCtrl', ['$scope', '$rootScope', '$resource', 'speech',
                 var overlap = false;
                 var startPosition = $scope.course.content.indexOf($scope.textSelected);
                 var endPosition = startPosition + $scope.textSelected.length;
-                $scope.course.comments.forEach(function(comment){
-                    if(startPosition <= comment.position && endPosition >= (comment.position+comment.text.length)){
-                        overlap = true;
-                    }
-                })
+                if($scope.course.comments){
+                    $scope.course.comments.forEach(function(comment){
+                        if(startPosition <= comment.position && endPosition >= (comment.position+comment.text.length)){
+                            overlap = true;
+                        }
+                    })
+                }
                 if(overlap){
                     $scope.textSelected = '';
                 }
@@ -253,7 +257,7 @@ app.controller('courseShowCtrl', ['$scope', '$rootScope', '$resource', 'speech',
 
     $scope.submit = function(){                      //save a comment
         if($scope.comentText){
-            $scope.loading = "fa fa-spinner fa-spin fa-3x";
+            $scope.saving = "fa fa-spinner fa-spin fa-3x";
             $scope.cmt.reply = {nick : $rootScope.user.nick, content: $scope.comentText};
             $scope.cmt.text = $scope.textSelected;
             $scope.cmt.position = $scope.course.content.indexOf($scope.textSelected);
@@ -261,11 +265,13 @@ app.controller('courseShowCtrl', ['$scope', '$rootScope', '$resource', 'speech',
                 if(result.exist){
                     $scope.result = $resource('/insert/comment/' + $scope.course._id).save($scope.cmt, function(){
                         $scope.load();
+                        $scope.saving = "";
                     });
                 }
                 else{
                     $scope.result = $resource('/save/comment/' + $scope.course._id).save($scope.cmt, function(){
                         $scope.load();
+                        $scope.saving = "";
                     });
                 }
             });
@@ -342,6 +348,9 @@ app.controller('courseListCtrl',['$scope', '$rootScope', '$resource', 'speech', 
             $rootScope.greeting = '';
             $scope.loading = "";                                           //load all the courses
         });
+        $resource('/topUsers').query(function(userList){
+            $scope.topUsers = userList;
+        })
     };
     if(! ($rootScope.user && $rootScope.user.email)) {
         $resource('/userInfo').get(function(user){          //load user profile when user refreshes the home page
@@ -351,7 +360,9 @@ app.controller('courseListCtrl',['$scope', '$rootScope', '$resource', 'speech', 
     else{
         $scope.refresh();
     };
-
+//    $scope.follow = function(id, nick){
+//        $scope.result = $resource('/follow/'+id+'/'+nick).get();
+//    }
 }]);
 app.controller('courseCreateCtrl',['$scope', '$rootScope', '$resource', '$location', 'imageResizeService', function ($scope, $rootScope, $resource, $location, imageResizeService) {
     $scope.course = {};
@@ -415,6 +426,45 @@ app.controller('userCtrl', function($scope, $resource, $location, imageResizeSer
             $scope.result = {status : 'no nick name'};
         }
     };
+});
+
+app.controller('userShowCtrl', function($scope, $resource, $routeParams, $rootScope){
+    $scope.followed = false;
+    $scope.loading = "fa fa-spinner fa-spin fa-3x";
+    $resource('/show/user/'+ $routeParams.id).get(function(user){
+        $scope.viewUser = user;
+        $scope.followedUser = [];
+        if(user.follow && user.follow.length>0){
+            $resource('/getUserNicks/'+user.follow.join(',')).query(function(followUserList){
+                if(followUserList){
+                    $scope.followedUser = followUserList;
+                }
+            })
+        }
+    });
+    $resource('/listByAuthor/' +$routeParams.id).query(function(courseList){
+        $scope.courses = courseList.sort(function(a,b){return new Date(b.date) - new Date(a.date);});
+        $rootScope.greeting = '';
+        $scope.loading = "";
+    });
+    $scope.follow = function(){
+        $resource('/follow/'+$scope.viewUser._id).get(function(result){
+            $scope.result = result;
+            if(! $rootScope.user.follow){
+                $rootScope.user.follow = [];
+            }
+            $rootScope.user.follow.push($scope.viewUser._id);
+        });
+    }
+    $scope.unfollow = function(){
+        $scope.result = $resource('/unfollow/'+$scope.viewUser._id).get(function(result){
+            $scope.result = result;
+            var index = $rootScope.user.follow.indexOf($scope.viewUser._id);
+            if(index >=0){
+                $rootScope.user.follow.splice(index,1);
+            }
+        });
+    }
 });
 app.controller('testCtrl', function($scope, $resource, $location, $rootScope){
     $scope.equal = "";

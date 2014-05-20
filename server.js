@@ -89,7 +89,7 @@ MongoClient.connect(uri,{server: {auto_reconnect: true}}, function(err, mongo) {
 });
 var email   = require("emailjs/email");
 var mailServer  = email.server.connect({
-    user:    "user",
+    user:    "username",
     password:"password",
     host:    "smtp.gmail.com",
     ssl:     true
@@ -99,6 +99,16 @@ app.get('/show/:col/:id', authenticated, function(req, res) {
     var id = req.params.id;
     res.setHeader('Content-Type', 'application/json; charset="utf-8"');
     db.collection(col).findOne({_id: new ObjectID(id)}, function(err, data) {
+        res.end(JSON.stringify(data));
+    });
+});
+app.get('/getUserNicks/:idList', authenticated, function(req, res) {
+    var idList = [];
+    req.params.idList.split(',').forEach(function(id){
+        idList.push(new ObjectID(id));
+    });
+    res.setHeader('Content-Type', 'application/json; charset="utf-8"');
+    db.collection('user').find({_id: {$in: idList}},{nick:1}).toArray(function(err, data) {
         res.end(JSON.stringify(data));
     });
 });
@@ -112,31 +122,100 @@ app.delete('/remove/:col/:id', authenticated, function(req, res) {
 });
 app.get('/list/:col', authenticated, function(req, res) {
     var col = req.params.col;
+    var id = req.session.passport.user._id;
     res.setHeader('Content-Type', 'application/json; charset="utf-8"');
-    db.collection(col).find().toArray(function(err, dataList) {
-        for(var i in dataList){
-            dataList[i].date = Date.parse(dataList[i].date);
-            if(dataList[i].content.length > 200){
-                dataList[i].content = dataList[i].content.substring(0,200) + '...';
-            }
-            if(dataList[i].comments){
-                dataList[i].commentCount = dataList[i].comments.length;
-                dataList[i].comments = [];
-            }
+    db.collection('user').findOne({_id: new ObjectID(id)}, {follow:1}, function(err, user){
+        var followList = [];
+        if(user.follow){
+            followList = user.follow;
         }
-        res.end(JSON.stringify(dataList));
-    });
+        followList.push(id);
+        console.log(followList);
+        db.collection(col).find({authorId: {'$in': followList}}).toArray(function(err, dataList) {
+            if(err) {
+                res.end(JSON.stringify([]));
+            }
+            else {
+                for(var i in dataList){
+                    dataList[i].date = Date.parse(dataList[i].date);
+                    if(dataList[i].content.length > 200){
+                        dataList[i].content = dataList[i].content.substring(0,200) + '...';
+                    }
+                    if(dataList[i].comments){
+                        dataList[i].commentCount = dataList[i].comments.length;
+                        dataList[i].comments = [];
+                    }
+                }
+                res.end(JSON.stringify(dataList));
+            }
+        });
+    })
+});
+app.get('/listByAuthor/:id', authenticated, function(req, res) {
+    var id = req.params.id;
+//    var id = req.session.passport.user._id;
+    res.setHeader('Content-Type', 'application/json; charset="utf-8"');
+    if(id){
+        db.collection("course").find({authorId: id}).toArray(function(err, dataList) {
+            if(err) {
+                res.end(JSON.stringify([]));
+            }
+            else {
+                for(var i in dataList){
+                    dataList[i].date = Date.parse(dataList[i].date);
+                    if(dataList[i].content.length > 200){
+                        dataList[i].content = dataList[i].content.substring(0,200) + '...';
+                    }
+                    if(dataList[i].comments){
+                        dataList[i].commentCount = dataList[i].comments.length;
+                        dataList[i].comments = [];
+                    }
+                }
+                res.end(JSON.stringify(dataList));
+            }
+        });
+    }
+    else{
+        res.end(JSON.stringify([]));
+    }
+});
+app.get('/topUsers', authenticated, function(req, res) {
+    res.setHeader('Content-Type', 'application/json; charset="utf-8"');
+    db.collection('user').find({$query: {}, $orderby: {lastPublish : -1 }}).limit(6).toArray(function(err, userList){
+        console.log(err);
+//        console.log(userList);
+        res.end(JSON.stringify(userList));
+    })
+});
+app.get('/follow/:id', authenticated, function(req, res) {
+    var id = req.params.id;
+    var user = req.session.passport.user;
+    res.setHeader('Content-Type', 'application/json; charset="utf-8"');
+    db.collection('user').update({_id : new ObjectID(user._id)}, {$addToSet: {follow: id}},function(err, ok){
+        res.end(JSON.stringify(ok));
+    })
+});
+app.get('/unfollow/:id', authenticated, function(req, res) {
+    var id = req.params.id;
+    var user = req.session.passport.user;
+    res.setHeader('Content-Type', 'application/json; charset="utf-8"');
+    db.collection('user').update({_id : new ObjectID(user._id)}, {$pull: {"follow": id}},function(err, ok){
+        res.end(JSON.stringify(ok));
+    })
 });
 app.post('/save/:col', authenticated, function(req, res){
-    var email = req.session.passport.user.email;
+    var user = req.session.passport.user;
     var col = req.params.col;
     var record = req.body;
-    record.email = email;
+    record.email = user.email;
+    record.authorId = user._id;
     record.date = new Date();
     record.content = record.content.substring(0,100000);
     res.setHeader('Content-Type', 'application/json; charset="utf-8"');
     db.collection(col).insert(record, function(err, result) {
-        res.end(JSON.stringify({status : 'ok'}));
+        db.collection('user').update({_id : new ObjectID(user._id)}, {$set: {lastPublish: new Date()}}, function(err, result) {
+            res.end(JSON.stringify({status : 'ok'}));
+        });
     });
 });
 app.post('/exist/comment/:id', authenticated, function(req, res){

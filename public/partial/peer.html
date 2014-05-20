@@ -1,11 +1,15 @@
 <div>
-	<h3>Please share your video camera and microphone to start group chat.</h3>
+	<h3>
+		Please share your video camera and microphone to start group chat.<br>
+		<hr>
+		<small ng-show="webrtc">Other users must input the same topic name to join this chat room.<br>You can set a long and complicated 'topic' name (something like 'axdi394029kdkekdkgkbs4532'), which is only known to the people you invited, to prevent uninvited users from joining it.</small>
+	</h3>
 	<hr>
 	<div class="form-group">
 		<div class="col-lg-4">
 			<h4>Topic :
 				<input type="text" class="small" id="topic" ng-model="topic" placeholder="eg. vacation plan" maxlength="200" required>
-				<button class="btn btn-primary pull-right" ng-click="join()">Join</button>
+				<button class="btn btn-primary pull-right" ng-click="join()" ng-hide="webrtc">Join</button>
 				<b class="text-warning" ng-show="mustLogin">Please <a href='/login'>login</a> to join a chat.</b>
 			</h4>
 			<p class="text-danger"  ng-show="webrtc">Your video</p>

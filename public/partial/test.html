@@ -1,0 +1,11 @@
+<div>
+	<div class='alert alert-info well-sm'>
+		<h4>(Chrome Only) Little Practice: Click the microphone icon and read the following line:</h4>
+		<blockquote class="text-{{messageType}}">
+			{{source}}  <i class="glyphicon glyphicon--chevron-right"></i>
+			<input type="text" id="speak" class="form-control middle pull-right" x-webkit-speech ng-model="speak" ng-show="webkitSpeech"/>
+		</blockquote>
+
+		<p class="text-info pull-right" ng-show="webkitSpeech">result: {{equal}}</p>  <br>
+	</div>
+</div>

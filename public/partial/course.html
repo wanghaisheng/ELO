@@ -1,0 +1,66 @@
+<div>
+	<div ng-show="user.email">
+		<div class="row">
+			<div class="col-sm-10 well-sm">
+				<h4 class="text-warning">{{greeting}}</h4>
+				<h3><i class="fa fa-book "></i> Courses</h3>
+				<a class="btn btn-warning pull-right" href="/create" tooltip-placement="left" tooltip-html-unsafe="<h4>Post your favorite article, and let the computer read it!</h4>" >
+					<i class="fa fa-plus"></i> Your Course
+				</a>
+				<hr>
+				<button class="btn btn-primary" ng-click="refresh()"><i class="fa fa-refresh"></i> Refresh</button>
+				<i class="{{loading}}"></i><br>
+				<table class="table table-hover ">
+					<thead>
+					<tr>
+						<th>Name</th>
+						<th>Image</th>
+						<th><i class="fa fa-comment"></i></th>
+						<th>
+							Introduction
+							<input type="search" ng-model="q" placeholder="Search in Introduction" class="searchBox pull-right">
+						</th>
+						<th>Date</th>
+						<th>Author</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr ng-repeat="course in courses  | filter:{content: q}"
+						ng-animate="{enter: 'view-enter', leave:'view-exit'}">
+						<td class="small">
+							<a href='/course/{{course._id}}'>&lt; {{course.name}} &gt;</a>
+						</td>
+						<td>
+							<img ng-src="{{course.img}}" width="50">
+						</td>
+						<td><span class="badge">{{course.commentCount}}</span></td>
+						<td>{{course.content}}</td>
+						<td class="date">{{course.date | date: "short"}}</td>
+						<td>
+							<i class="fa fa-user"></i> <a href="/viewUser/{{course.authorId}}">{{course.author}}</a>
+						</td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+			<!--{{user.follow}}-->
+			<div class="col-sm-2 alert alert-success">
+				<br>
+				<h5><i class="fa fa-group"></i> Active Users</h5>
+				<table class="table">
+					<tr ng-repeat="activeUser in topUsers">
+						<td>
+							<img ng-src="{{activeUser.img}}" width="50" class="img-rounded">
+						</td>
+						<td>
+							<h5 class="pull-right">
+								<a href="/viewUser/{{activeUser._id}}">{{activeUser.nick}}</a>
+								<!--<button ng-click="follow('{{activeUser._id}}','{{activeUser.nick}}')" class="btn btn-sm pull-right">Follow </button> {{result}}-->
+							</h5>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>

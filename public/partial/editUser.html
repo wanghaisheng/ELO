@@ -1,0 +1,46 @@
+<div>
+	<div ng-controller="userCtrl">
+		<h3><i class="fa fa-user"></i> {{user.nick}}</h3>
+		<hr>
+		<form class="form-horizontal">
+			<div class="form-group">
+				<label for="img" class="col-lg-2 control-label">Photo</label>
+				<div class="col-lg-2">
+					<input type="file" accept="image/*" id="img" onchange="angular.element(this).scope().selectFile(this)">
+				</div>
+				<div class="col-lg-3">
+					<img  ng-src="{{user.img}}" width="120" class="img-rounded img-list">
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="gender" class="col-lg-2 control-label">Gender</label>
+				<div class="col-lg-10" id="gender">
+					<label class="radio-inline">
+						<input type="radio" name="gender" ng-model="user.gender" value="male">  Male
+					</label>
+					<label class="radio-inline">
+						<input type="radio" name="gender" ng-model="user.gender" value="female"> Female
+					</label>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="nick" class="col-lg-2 control-label">Nick Name</label>
+				<div class="col-lg-10">
+					<input type="text" class="form-control small" id="nick" ng-model="user.nick" placeholder="Your Nick Name" maxlength="200" required>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="intro" class="col-lg-2 control-label">Self Introduction</label>
+				<div class="col-lg-10">
+					<input type="text" class="form-control middle" id="intro" ng-model="user.intro" placeholder="Introduce Yourself" maxlength="200">
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-lg-10 col-lg-offset-2">
+					<button type="submit" ng-click="saveUserInfo();" class="btn btn-primary">Submit</button>
+					<p>{{result.status}}</p>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>

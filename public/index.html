@@ -9,122 +9,61 @@
 		<meta name="author" content="coderLMN">
 		<link rel="shortcut icon" href="img/favicon.ico">
 
-		<title>e-learning community</title>
-
+		<title>Study Colony - a free e-learning community</title>
+		<!--Google fonts stored in local-->
+		<!--<link href='http://fonts.googleapis.com/css?family=McLaren' rel='stylesheet' type='text/css'>-->
 		<!-- Bootstrap core CSS -->
 		<link href="css/bootstrap-cerulean.min.css" rel="stylesheet">
-
 		<!-- Custom styles for this template -->
 		<link href="css/custom.css" rel="stylesheet">
+		<!--font awesome-->
+		<link href="fontAwesome/css/font-awesome.min.css" rel="stylesheet">
+		<!--flip effect from http://daneden.me/animate/-->
+		<link href="css/animate.css" rel="stylesheet">
+		<!-- load angularJS lib from local instead of Google CDN, because Google access in China is unstable -->
+		<script src="js/angular.1.1.5.min.js"></script>
+		<!-- main front-end app -->
+		<script src="js/front.js"></script>
 	</head>
 
 	<body>
-		<div class="navbar navbar-default navbar-fixed-top">
-			<div class="container">
-			  <div class="navbar-header">
-				  <a href="/" class="navbar-brand">Home</a>
-				  <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
-					  <span class="icon-bar"></span>
-					  <span class="icon-bar"></span>
-					  <span class="icon-bar"></span>
-				  </button>
-			  </div>
-			  <div class="navbar-collapse collapse" id="navbar-main">
-				  <ul class="nav navbar-nav">
-					  <li class="dropdown">
-						  <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="themes">
-							  Themes
-							  <span class="caret"></span>
-						  </a>
-						  <ul class="dropdown-menu" aria-labelledby="themes">
-							  <li><a href="../default/">Default</a></li>
-							  <li class="divider"></li>
-							  <li><a href="../amelia/">Amelia</a></li>
-							  <li><a href="../cerulean/">Cerulean</a></li>
-							  <li><a href="../cosmo/">Cosmo</a></li>
-							  <li><a href="../cyborg/">Cyborg</a></li>
-							  <li><a href="../darkly/">Darkly</a></li>
-							  <li><a href="../flatly/">Flatly</a></li>
-							  <li><a href="../journal/">Journal</a></li>
-							  <li><a href="../lumen/">Lumen</a></li>
-							  <li><a href="../readable/">Readable</a></li>
-							  <li><a href="../simplex/">Simplex</a></li>
-							  <li><a href="../slate/">Slate</a></li>
-							  <li><a href="../spacelab/">Spacelab</a></li>
-							  <li><a href="../superhero/">Superhero</a></li>
-							  <li><a href="../united/">United</a></li>
-							  <li><a href="../yeti/">Yeti</a></li>
-						  </ul>
-					  </li>
-					  <li>
-						  <a href="../help/">Help</a>
-					  </li>
-					  <li>
-						  <a href="http://news.bootswatch.com">Blog</a>
-					  </li>
-					  <li class="dropdown">
-						  <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="download">
-							  Download
-							  <span class="caret"></span>
-						  </a>
-						  <ul class="dropdown-menu" aria-labelledby="download">
-							  <li><a href="./bootstrap.min.css">bootstrap.min.css</a></li>
-							  <li><a href="./bootstrap.css">bootstrap.css</a></li>
-							  <li class="divider"></li>
-							  <li><a href="./variables.less">variables.less</a></li>
-							  <li><a href="./bootswatch.less">bootswatch.less</a></li>
-						  </ul>
-					  </li>
-				  </ul>
-
-				  <ul class="nav navbar-nav navbar-right">
-					  <li><a href="http://builtwithbootstrap.com/" target="_blank">Built With Bootstrap</a></li>
-					  <li><a href="https://wrapbootstrap.com/?ref=bsw" target="_blank">WrapBootstrap</a></li>
-				  </ul>
-
-			  </div>
-		  </div>
-		</div>
-
-		<div ng-view="index" ng-animate="{enter: 'view-enter', leave:'rotateRight'}" class="well-large">
-
-		</div>
-
-		<hr>
-
-		<h1>This is the home page.</h1>
-		<hr>
-		<h2>Emphasis classes</h2>
-		<p class="text-muted">Fusce dapibus, tellus ac cursus commodo, tortor mauris nibh.</p>
-		<p class="text-primary">Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
-		<p class="text-warning">Etiam porta sem malesuada magna mollis euismod.</p>
-		<p class="text-danger">Donec ullamcorper nulla non metus auctor fringilla.</p>
-		<p class="text-success">Duis mollis, est non commodo luctus, nisi erat porttitor ligula.</p>
-		<p class="text-info">Maecenas sed diam eget risus varius blandit sit amet non magna.</p>
-	<!-- Bootstrap core JavaScript
-	================================================== -->
-	<!-- Placed at the end of the document so the pages load faster -->
-		<div class="modal" ng-show="signOn">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h4 class="modal-title">To Proceed, You Need to Sign On with Google OpenID</h4>
-					</div>
-					<div class="modal-body">
-						<!-- target="_self" is vital for this path being handled directly, bypassing angularJS $routeProvider -->
-						<a href="/auth/google" target="_self" title="Sign On with Google OpenID">
-							<img src="img/google.png" width="200">
-						</a>
-					</div>
-					<div class="modal-footer">
-						<p class="text-muted">At this moment, only Google users can sign on. Sorry for any inconvenience.</p>
-					</div>
-				</div>
+		<div class="navbar navbar-default navbar-fixed-top google-font" ng-controller="menuCtrl">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse" ng-click="toggleCollapsed()">
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="/">Study Colony</a>
+			</div>
+			<div class="navbar-collapse collapse {{in}} navbar-responsive-collapse">
+				<ul class="nav navbar-nav">
+					<li><a href="/"><i class="fa fa-home"></i> Courses</a></li>
+					<li><a href="https://github.com/coderLMN/ELO" target="blank"><i class="fa fa-github"></i> Source Code</a></li>
+					<li><a href="/p2p"><i class="fa fa-camera"></i> Video Chat</a></li>
+				</ul>
+				<ul class="nav navbar-nav navbar-right">
+					<li><a href="/editUser"><i class="fa fa-cog {{spin}}"></i> {{user.nick}}</a></li>
+					<li><img ng-src="{{user.img}}" height="50"></li>
+					<li><a href="/logout" target="_self" ng-show="user.email"><i class="fa fa-power-off"></i> Logout</a></li>
+				</ul>
 			</div>
 		</div>
-		<script src="js/angular-1.1.5.min.js"></script>
-		<script src="js/bootstrap-ui-tpls-0.6.0.js"></script>
+		<div class="col-sm-offset-1 col-sm-10 well-sm">
+			<div id="isChrome">
+			</div>
+			<div ng-view="index" ng-animate="{enter: 'view-enter', leave:'rotateRight'}" class="well-large">
+			</div>
+		</div>
+
+		<!-- Bootstrap core JavaScript
+		================================================== -->
+		<!-- Placed at the end of the document so the pages load faster -->
+
+		<script src="js/ui-bootstrap-tpls-0.6.0.min.js"></script>
 		<script src="js/resource.js"></script>
-		<script src="js/front.js"></script>
+		<script src="js/imageResizeService.js"></script>
+		<script src="js/IndexedDBService.js"></script>
+		<script src="js/simpleWebRTC.js"></script>
 	</body>
 </html>

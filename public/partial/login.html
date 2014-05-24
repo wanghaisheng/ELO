@@ -1,20 +1,63 @@
-<div class="modal" aria-hidden="false">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" ng-click="cancel()" >×</button>
-				<h4 class="modal-title">To Proceed, You Need to Sign On with Google OpenID</h4>
+<div class="loginPane">
+	<div class="{{effect}}" ng-show="showLogin">
+		<div class="well-sm col-lg-8 col-lg-offset-2 loginPane">
+			<div class="col-lg-5">
+				<img src='../img/user.png'>
 			</div>
-			<div class="modal-body">
-				<!-- target="_self" is vital for this path being handled directly, bypassing angularJS $routeProvider -->
-				<a href="/auth/google" target="_self" title="Sign On with Google OpenID">
-					<img src="img/google.png" width="200">
-				</a>
+			<div class="col-lg-7">
+				<h4>Login</h4>
+				<form class="form-horizontal" name="signIn">
+					<div class="input-group margin-bottom-sm">
+						<span class="input-group-addon"><i class="fa fa-envelope-o fa-fw"></i></span>
+						<input type="email" class="form-control" list="userList" id="userEmail" ng-model="user.email" placeholder="Your Login Email" maxlength="200">
+						<datalist id="userList">
+							<option ng-repeat="login in userList" value="{{login.email}}">
+						</datalist>
+					</div>
+					<div class="input-group">
+						<span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
+						<input type="password" class="form-control" id="userPassword" ng-model="user.password" placeholder="Your Password" maxlength="200">
+					</div>
+					<div class="input-group">
+						<label class="checkbox-inline">
+							<input type="checkbox" name="rememberPassword" ng-model="user.rememberPassword" value="true">  Remeber Password
+						</label>
+					</div>
+					<br>
+					<button type="submit" ng-click="login()" class="btn btn-primary">Login</button>
+					<button type="submit" ng-click="reset()" class="btn btn-warning">Forget Password</button>
+					<button class="btn btn-link pull-right" ng-click="toggleLogin()">New User</button>
+				</form>
+				<br><i class="{{loading}}"></i><b class="text-info">{{info.status}}</b>
 			</div>
-			<div class="modal-footer">
-				<button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+		</div>
+	</div>
+	<div class="{{effect}}" ng-hide="showLogin">
+		<div class="well-sm col-lg-8 col-lg-offset-2 loginPane">
+			<div class="col-lg-5">
+				<img src='../img/user.png'>
+			</div>
+			<div class="col-lg-7">
+				<h4>Sign Up</h4>
+				<form class="form-horizontal"  name="signUp">
+					<div class="input-group margin-bottom-sm">
+						<span class="input-group-addon"><i class="fa fa-user fa-fw"></i></span>
+						<input type="text" class="form-control" id="newUserNick" ng-model="user.nick" placeholder="Your Nickname" maxlength="200" required>
+					</div>
+					<div class="input-group">
+						<span class="input-group-addon"><i class="fa fa-envelope-o fa-fw"></i></span>
+						<input type="email" class="form-control" id="newUserEmail" ng-model="user.email" placeholder="Your Login Email" maxlength="200" required>
+					</div>
+					<div class="input-group">
+						<span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
+						<input type="password" class="form-control" id="newUserPassword" ng-model="user.password" placeholder="Create a Password" maxlength="200" required>
+					</div>
+					<br>
+					<button type="submit" ng-click="signOn()" class="btn btn-primary">Submit</button>
+					<button class="btn btn-link pull-right" ng-click="toggleLogin()">Registered User</button>
+				</form>
+				<br><i class="{{loading}}"></i><b class="text-info">{{info.status}}</b>
 			</div>
 		</div>
 	</div>
 </div>
-

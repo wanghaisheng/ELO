@@ -1,14 +1,67 @@
 .navbar-fixed-top {
     opacity: 0.95;
+    padding-left: 12px;
+    background-image : url("../img/logo.png");
 }
-
+.navbar-nav.navbar-right:last-child {
+    margin-right: 10px;
+}
+.navbar-toggle {
+    margin-right: 5px;
+}
 body {
     padding-top: 40px;
     padding-bottom: 40px;
     background-color: #eee;
     overflow-x: hidden;
 }
-
+.google-font{
+    font-family: 'McLaren', cursive;
+}
+@font-face {
+    font-family: 'McLaren';
+    font-style: normal;
+    font-weight: 400;
+    src: local('McLaren'), local('McLaren-Regular'), url(google.woff) format('woff');
+}
+.loginPane{
+    background-color: black;
+}
+.modal-dialog {
+    max-width: 540px;
+    margin: 60px auto;
+}
+.book {
+    background-image: url(../img/bg.jpg);
+    background-repeat: repeat;
+    border-left: 0px;
+    border-bottom: dodgerblue 2px solid;
+}
+.speed {
+    text-align: center;
+}
+.no-border {
+    border-top: none !important;
+}
+.embedComment{
+    position: absolute;
+    width: 100%;
+    background-color: lightyellow;
+    /*opacity: 0.9;*/
+    border: dodgerblue 1px solid;
+}
+.commentRow {
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 5px;
+}
+.highlighted{
+    background-color: black;
+    color: white;
+}
+.full-width {
+    width: 100%;
+}
 .form-signin {
     max-width: 330px;
     padding: 15px;
@@ -115,4 +168,84 @@ body {
 
 .modal {
     display: block;
+}
+span.glyphicon {
+    font-size: 30px;
+}
+td.nick, td.date {
+    width: 160px;
+}
+.navbar-brand {
+    padding: 12px 35px;
+    font-size: 24px;
+}
+input.small {
+    max-width: 200px;
+    margin-bottom: 6px;
+}
+input.middle {
+    max-width: 300px;
+    margin-bottom: 6px;
+}
+textarea.content, input.content {
+    width: 80%;
+}
+
+.searchBox {
+    border-color: #c09853;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    border: 1px solid #cccccc;
+    border-radius: 4px;
+    font-size: 14px;
+    width: 200px;
+}
+
+.animate-hide {
+    -webkit-transition:all linear 0.6s;
+    transition:all linear 0.6s;
+    line-height:20px;
+    opacity:1;
+    padding:10px;
+    border:1px solid black;
+    background:white;
+}
+
+.animate-hide.ng-hide-add,
+.animate-hide.ng-hide-remove {
+    display:block!important;
+}
+
+.animate-hide.ng-hide {
+    line-height:0;
+    opacity:0;
+    padding:0 10px;
+}
+
+#remoteVideos video {
+    border-radius: 10px;
+    -webkit-border-radius: 20px;
+    -moz-border-radius: 20px;
+    height: 150px;
+    margin-right: 15px;
+}
+#localVideo {
+    padding:4px;
+    border:1px solid rgba(0, 0, 0, 0.2);
+    -webkit-box-shadow:0 1px 3px rgba(0, 0, 0, 0.1);
+    -moz-box-shadow:0 1px 3px rgba(0, 0, 0, 0.1);
+    box-shadow:0 1px 3px rgba(0, 0, 0, 0.1);
+    height: 150px;
+}
+
+.jumbotron {
+    margin-right: 1%;
+    width: 99%;
+    border: 1px solid #ccc;
+    -webkit-box-shadow:0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.bottom {
+    position: absolute;
+    bottom: 0;
 }
